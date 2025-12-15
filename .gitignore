@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+
+# OS
+.DS_Store
+
+# Data (generated / large)
+data/raw/
+data/processed/
+
+# Secrets
+.env
+
+# Streamlit cache
+.streamlit/
