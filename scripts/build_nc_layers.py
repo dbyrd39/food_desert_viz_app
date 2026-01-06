@@ -24,14 +24,14 @@ def main():
     print("1) Fetching NC census tracts…")
     tracts = load_nc_tracts_gdf(RAW_CACHE)
 
-    print("1.5) Fetching ACS population data…")
+    print("2) Fetching ACS population data…")
     pop_df = fetch_nc_tract_population()
     pop_path = PROCESSED / "tract_population.parquet"
     pop_df.to_parquet(pop_path, index=False)
     print(f"   wrote {pop_path}")
 
 
-    print("2) Simplifying tract geometries (offline)…")
+    print("3) Simplifying tract geometries (offline)…")
     tracts_s = simplify_polygons(tracts, tolerance=0.001)
     tracts_s = tracts_s.merge(pop_df, on="GEOID", how="left")
     tracts_s["population"] = tracts_s["population"].fillna(0).astype(int)
@@ -43,7 +43,7 @@ def main():
 
 
 
-    print("3) Loading USDA Food Access data (official deserts)…")
+    print("4) Loading USDA Food Access data (official deserts)…")
     # Place your CSV here:
     #   data/raw/cache/usda_food_access.csv
     usda = load_usda_food_access(RAW_CACHE, url=None)
@@ -52,7 +52,7 @@ def main():
     desert_scores.to_parquet(desert_path, index=False)
     print(f"   wrote {desert_path}")
 
-    print("3.5) Computing population-weighted food desert impact…")
+    print("5) Computing population-weighted food desert impact…")
 
     desert_pop = desert_scores.merge(pop_df, on="GEOID", how="left")
     desert_pop["population"] = desert_pop["population"].fillna(0)
@@ -66,11 +66,11 @@ def main():
     print(f"   wrote {desert_pop_path}")
 
 
-    print("4) Fetching outlets from OSM Overpass (points)…")
+    print("6) Fetching outlets from OSM Overpass (points)…")
     healthy_pts = fetch_healthy_outlets()
     unhealthy_pts = fetch_unhealthy_outlets()
 
-    print("5) Spatial join: outlets → tract GEOID…")
+    print("7) Spatial join: outlets → tract GEOID…")
     healthy_gdf = points_to_gdf(healthy_pts)
     unhealthy_gdf = points_to_gdf(unhealthy_pts)
 
@@ -84,13 +84,13 @@ def main():
     print(f"   wrote {healthy_path}")
     print(f"   wrote {unhealthy_path}")
 
-    print("6) Compute food swamp index (computed)…")
+    print("8) Compute food swamp index (computed)…")
     swamp = compute_food_swamp_index(joined_h, joined_u)
     swamp_path = PROCESSED / "food_swamp_scores.parquet"
     swamp.to_parquet(swamp_path, index=False)
     print(f"   wrote {swamp_path}")
 
-    print("6.5) Computing population-weighted food swamp impact…")
+    print("9) Computing population-weighted food swamp impact…")
 
     swamp_pop = swamp.merge(pop_df, on="GEOID", how="left")
     swamp_pop["population"] = swamp_pop["population"].fillna(0)
@@ -104,7 +104,7 @@ def main():
     print(f"   wrote {swamp_pop_path}")
 
 
-    print("7) Build heatmap inputs from tract centroids…")
+    print("10) Build heatmap inputs from tract centroids…")
     cents = tract_centroids(tracts_s)
 
     desert_w = desert_scores.merge(cents, on="GEOID", how="left")
@@ -121,14 +121,14 @@ def main():
     swamp_heat.to_parquet(swamp_heat_path, index=False)
     print(f"   wrote {swamp_heat_path}")
 
-    print("8) Nutrition scores (stub)…")
+    print("11) Nutrition scores (stub)…")
     store_nutrition, tract_nutrition = compute_nutrition_scores_stub(joined_h)
     store_nutrition.to_parquet(PROCESSED / "store_nutrition.parquet", index=False)
     tract_nutrition.to_parquet(PROCESSED / "nutrition_scores.parquet", index=False)
     print(f"   wrote {PROCESSED / 'store_nutrition.parquet'}")
     print(f"   wrote {PROCESSED / 'nutrition_scores.parquet'}")
 
-    print("9) Fetching NC county boundaries…")
+    print("12) Fetching NC county boundaries…")
     counties = load_nc_counties(RAW_CACHE)
     counties.to_file(PROCESSED / "nc_counties.geojson", driver="GeoJSON")
 
