@@ -10,6 +10,16 @@ TIGER_COUNTY_URL = (
 )
 
 def load_nc_counties(cache_dir: Path) -> gpd.GeoDataFrame:
+    """Load NC county boundaries as a GeoDataFrame in EPSG:4326, downloading if needed.
+
+    Args:
+        cache_dir: Directory used to cache the downloaded ZIP and extracted
+            shapefile.
+
+    Returns:
+        GeoDataFrame with ``NAME`` and ``geometry`` columns for all
+        North Carolina counties, projected to EPSG:4326.
+    """
     ensure_dir(cache_dir)
 
     zip_path = cache_dir / "tl_2022_us_county.zip"

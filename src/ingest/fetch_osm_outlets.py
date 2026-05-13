@@ -73,6 +73,17 @@ def _elements_to_points(elements: list[dict], outlet_type: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 def fetch_healthy_outlets(bbox: BoundingBox = NC_BBOX) -> pd.DataFrame:
+    """Fetch supermarket, grocery, and marketplace locations from OSM Overpass.
+
+    Args:
+        bbox: Bounding box defining the geographic area to query; defaults to
+            ``NC_BBOX`` covering North Carolina.
+
+    Returns:
+        DataFrame with columns ``name``, ``lat``, ``lon``, ``outlet_type``
+        (``"healthy"``), and ``osm_id``. Results are cached to disk after the
+        first request.
+    """
     s,w,n,e = bbox.south, bbox.west, bbox.north, bbox.east
     q_body = f"""
 node[shop=supermarket]({s},{w},{n},{e});
@@ -86,6 +97,17 @@ way[amenity=marketplace]({s},{w},{n},{e});
     return _elements_to_points(data.get("elements", []), "healthy")
 
 def fetch_unhealthy_outlets(bbox: BoundingBox = NC_BBOX) -> pd.DataFrame:
+    """Fetch fast food locations from OSM Overpass.
+
+    Args:
+        bbox: Bounding box defining the geographic area to query; defaults to
+            ``NC_BBOX`` covering North Carolina.
+
+    Returns:
+        DataFrame with columns ``name``, ``lat``, ``lon``, ``outlet_type``
+        (``"unhealthy"``), and ``osm_id``. Results are cached to disk after the
+        first request.
+    """
     s,w,n,e = bbox.south, bbox.west, bbox.north, bbox.east
     q_body = f"""
 node[amenity=fast_food]({s},{w},{n},{e});

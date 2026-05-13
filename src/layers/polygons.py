@@ -5,6 +5,17 @@ import pandas as pd
 import folium
 
 def add_food_desert_layer(m: folium.Map, tracts_geojson: Path, desert_df: pd.DataFrame):
+    """Add a food desert severity choropleth layer to a Folium map.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        tracts_geojson: Path to the NC census tracts GeoJSON file.
+        desert_df: DataFrame with ``GEOID`` and ``desert_severity`` columns,
+            as produced by ``compute_food_desert_scores``.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     gdf = gpd.read_file(tracts_geojson)
     merged = (
         gdf.merge(desert_df, on="GEOID", how="left")
@@ -49,6 +60,17 @@ def add_food_desert_layer(m: folium.Map, tracts_geojson: Path, desert_df: pd.Dat
 
 
 def add_food_swamp_layer(m: folium.Map, tracts_geojson: Path, swamp_df: pd.DataFrame):
+    """Add a food swamp index choropleth layer to a Folium map.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        tracts_geojson: Path to the NC census tracts GeoJSON file.
+        swamp_df: DataFrame with ``GEOID`` and ``swamp_index`` columns,
+            as produced by ``compute_food_swamp_index``.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     gdf = gpd.read_file(tracts_geojson)
     merged = (
         gdf.merge(swamp_df[["GEOID", "swamp_index"]], on="GEOID", how="left")
@@ -95,6 +117,17 @@ def add_food_swamp_layer(m: folium.Map, tracts_geojson: Path, swamp_df: pd.DataF
     ).add_to(m)
 
 def add_pop_weighted_food_desert_layer(m, tracts_geojson: Path, df: pd.DataFrame):
+    """Add a population-weighted food desert choropleth layer to a Folium map.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        tracts_geojson: Path to the NC census tracts GeoJSON file.
+        df: DataFrame with ``GEOID`` and ``pop_weighted_desert`` columns,
+            where each value is ``desert_severity * tract_population``.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     gdf = gpd.read_file(tracts_geojson)
     merged = gdf.merge(
         df[["GEOID", "pop_weighted_desert"]],
@@ -132,6 +165,17 @@ def add_pop_weighted_food_desert_layer(m, tracts_geojson: Path, df: pd.DataFrame
     ).add_to(m)
 
 def add_pop_weighted_food_swamp_layer(m, tracts_geojson: Path, df: pd.DataFrame):
+    """Add a population-weighted food swamp choropleth layer to a Folium map.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        tracts_geojson: Path to the NC census tracts GeoJSON file.
+        df: DataFrame with ``GEOID`` and ``pop_weighted_swamp`` columns,
+            where each value is ``swamp_index * tract_population``.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     gdf = gpd.read_file(tracts_geojson)
     merged = gdf.merge(
         df[["GEOID", "pop_weighted_swamp"]],
@@ -171,6 +215,15 @@ def add_pop_weighted_food_swamp_layer(m, tracts_geojson: Path, df: pd.DataFrame)
 
 
 def add_county_boundaries(m: folium.Map, counties_geojson: Path):
+    """Add NC county boundary outlines as a Folium GeoJSON layer.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        counties_geojson: Path to the NC counties GeoJSON file.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     gdf = gpd.read_file(counties_geojson)
 
     folium.GeoJson(
