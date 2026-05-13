@@ -10,6 +10,19 @@ def add_point_layer(
     tooltip_cols: list[str],
     color: str,
 ):
+    """Add a clustered circle-marker layer to a Folium map.
+
+    Args:
+        m: Folium map to which the layer is added in place.
+        points_df: DataFrame with ``lat`` and ``lon`` columns for each point.
+        name: Layer name shown in the Folium layer control.
+        tooltip_cols: Column names from ``points_df`` to include in each
+            marker's hover tooltip.
+        color: CSS color string used for both the marker outline and fill.
+
+    Returns:
+        None. The layer is added to ``m`` as a side effect.
+    """
     cluster = MarkerCluster(name=name, disableClusteringAtZoom=13)
     cluster.add_to(m)
 

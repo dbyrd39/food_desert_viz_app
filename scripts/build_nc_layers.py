@@ -11,7 +11,6 @@ from src.spatial.tract_joins import points_to_gdf, spatial_join_points_to_tracts
 from src.spatial.centroids import tract_centroids
 from src.metrics.food_desert import compute_food_desert_scores
 from src.metrics.food_swamp import compute_food_swamp_index
-from src.metrics.nutrition import compute_nutrition_scores_stub
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RAW_CACHE = PROJECT_ROOT / "data" / "raw" / "cache"
@@ -121,14 +120,7 @@ def main():
     swamp_heat.to_parquet(swamp_heat_path, index=False)
     print(f"   wrote {swamp_heat_path}")
 
-    print("11) Nutrition scores (stub)…")
-    store_nutrition, tract_nutrition = compute_nutrition_scores_stub(joined_h)
-    store_nutrition.to_parquet(PROCESSED / "store_nutrition.parquet", index=False)
-    tract_nutrition.to_parquet(PROCESSED / "nutrition_scores.parquet", index=False)
-    print(f"   wrote {PROCESSED / 'store_nutrition.parquet'}")
-    print(f"   wrote {PROCESSED / 'nutrition_scores.parquet'}")
-
-    print("12) Fetching NC county boundaries…")
+    print("11) Fetching NC county boundaries…")
     counties = load_nc_counties(RAW_CACHE)
     counties.to_file(PROCESSED / "nc_counties.geojson", driver="GeoJSON")
 

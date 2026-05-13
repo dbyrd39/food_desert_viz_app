@@ -2,6 +2,18 @@ from __future__ import annotations
 import pandas as pd
 
 def compute_food_desert_scores(usda_df: pd.DataFrame) -> pd.DataFrame:
+    """Compute per-tract food desert severity scores from USDA food access data.
+
+    Args:
+        usda_df: DataFrame loaded from the USDA Food Access Research Atlas CSV,
+            containing a census tract identifier column and LILA/LowAccess flag
+            columns.
+
+    Returns:
+        DataFrame with columns ``GEOID`` (11-digit tract string),
+        ``is_food_desert`` (bool), and ``desert_severity`` (int count of active
+        food-access flag columns).
+    """
     df = usda_df.copy()
 
     geoid_col = None

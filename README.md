@@ -27,14 +27,14 @@ Note: The +1 ensures that the denominator is never 0.
 
 Population-weighted food deserts/swamps are incorporated as additional layers. These layers are similar to the unweighted layers, except they use a population-weighted score to determine presence and severity of food deserts and swamps. The current scoring algorithm is simply the severity (or index) multiplied by the population of the census tract. Theoretically, these layers allow users to identify which census tracts contain the largest numbers of people suffering from the worst food environment conditions. Although the score itself has little mathematically meaning beyond "higher score = worse", the value allows the opacity-scaling of the application to depict the most problematic areas in terms of number of people impacted. 
 
-Future versions of this project will implement an additional nutrition layer that analyzes the actual inventory of healthy food outlets to determine how nutritious they actually are. Even though a supermarket or a grocery store is present in a census tract, it may lack healthy food options compared to grocery stores in other census tracts. This additional nutrition layer will allow users to inspect locations that are considered "healthy" sources by the USDA and determine if they are actually meeting the needs of the population.
+A nutrition layer is not currently implemented. A meaningful implementation would require store-inventory data (e.g., a nutrient-density API or USDA purchase records) to go beyond simply counting outlets — which the food swamp index already captures.
 
 ## Data
 
 - Census tracts/county lines are fetched from US Census TIGER/Line.
 - Food deserts are computed from a USDA Food Access Research Atlas CSV (you provide the CSV in `data/raw/cache/usda_food_access.csv` or pass a URL in the build script).
 - Food swamps are computed from OSM outlet counts.
-- Nutrition scores are still in progress
+- Nutrition scoring is not implemented (requires store-inventory data beyond what OSM provides).
 
 This application makes use of cached directories when possible, improving speed and performance. Additionally, data is totally ingested prior to loading the map, so re-calculations do not occur when layers are toggled on and off. Streamlit does have to buffer, but having data ingestion totally occur on the front end prevents Streamlit from crashing. As a result, this application prioritizes consistency and functionality over real-time analysis. Higher-powered resources and access to expensive data warehouses would allow this application to function in real-time. 
 

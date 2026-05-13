@@ -6,9 +6,11 @@ import pandas as pd
 ACS_URL = "https://api.census.gov/data/2022/acs/acs5"
 
 def fetch_nc_tract_population() -> pd.DataFrame:
-    """
-    Fetch total population per census tract in North Carolina
-    using ACS 5-year estimates.
+    """Fetch total population per census tract in North Carolina from the ACS 5-year API.
+
+    Returns:
+        DataFrame with columns ``GEOID`` (11-digit tract string) and
+        ``population`` (int), one row per NC census tract.
     """
     params = {
         "get": "B01003_001E",

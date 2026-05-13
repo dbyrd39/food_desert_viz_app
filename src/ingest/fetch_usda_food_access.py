@@ -7,6 +7,16 @@ from src.utils.cache import ensure_dir
 DEFAULT_LOCAL_NAME = "usda_food_access.csv"
 
 def get_usda_food_access(cache_dir: Path, url: str | None = None) -> Path:
+    """Return the path to the USDA Food Access Research Atlas CSV, downloading if needed.
+
+    Args:
+        cache_dir: Directory where the CSV is cached after download.
+        url: Optional HTTPS URL to download the CSV from if it is not already
+            cached. Raises ``FileNotFoundError`` if omitted and the file is absent.
+
+    Returns:
+        Path to the local CSV file.
+    """
     ensure_dir(cache_dir)
     out = cache_dir / DEFAULT_LOCAL_NAME
     if out.exists():
@@ -25,4 +35,14 @@ def get_usda_food_access(cache_dir: Path, url: str | None = None) -> Path:
     return out
 
 def load_usda_food_access(cache_dir: Path, url: str | None = None) -> pd.DataFrame:
+    """Load the USDA Food Access Research Atlas CSV into a DataFrame.
+
+    Args:
+        cache_dir: Directory where the CSV is cached after download.
+        url: Optional HTTPS URL to download the CSV from if it is not already
+            cached. Passed through to ``get_usda_food_access``.
+
+    Returns:
+        DataFrame containing all columns from the USDA food access CSV.
+    """
     return pd.read_csv(get_usda_food_access(cache_dir, url=url), low_memory=False)
